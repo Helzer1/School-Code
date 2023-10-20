@@ -50,40 +50,63 @@ public class BlackjackController {
 
     @FXML
     void Hit(ActionEvent event) {
-    	if (playerTotal < 21) {
+        if (playerTotal < 21) {
             // Deal another card to the player
             String card = generateCardValue();
-            playerTotal += getCardValue(card);
+            int cardValue = getCardValue(card);
 
+            // Check if there are available player card slots
             if (playerCard1.getText().isEmpty()) {
                 playerCard1.setText(card);
+                playerTotal += cardValue;
             } else if (playerCard2.getText().isEmpty()) {
                 playerCard2.setText(card);
+                playerTotal += cardValue;
             } else if (playerCard3.getText().isEmpty()) {
                 playerCard3.setText(card);
+                playerTotal += cardValue;
             } else if (playerCard4.getText().isEmpty()) {
                 playerCard4.setText(card);
+                playerTotal += cardValue;
             }
-        } else if (playerTotal > 21) {
-            betBox.setText("Dealer wins!");
+
+            // Check if the player goes over 21
+            if (playerTotal > 21) {
+                betBox.setText("Dealer wins!");
+            } else if (playerTotal == 21) {
+                // Stand if player reaches 21
+                Stand(null);
+            }
         }
     }
 
+
     @FXML
     void Play(ActionEvent event) {
-    	// Start a new game
+        // Start a new game
         playerTotal = 0;
         dealerTotal = 0;
-        dealerCard1.setText(generateCardValue());
+        betBox.setText("");
+
+        // Deal cards for the dealer and the player
+        String dealerCard1Value = generateCardValue();
+        dealerTotal += getCardValue(dealerCard1Value);
+        dealerCard1.setText(dealerCard1Value);
         dealerCard2.setText("");
         dealerCard3.setText("");
         dealerCard4.setText("");
-        playerCard1.setText(generateCardValue());
-        playerCard2.setText(generateCardValue());
+
+        String playerCard1Value = generateCardValue();
+        playerTotal += getCardValue(playerCard1Value);
+        playerCard1.setText(playerCard1Value);
+
+        String playerCard2Value = generateCardValue();
+        playerTotal += getCardValue(playerCard2Value);
+        playerCard2.setText(playerCard2Value);
         playerCard3.setText("");
         playerCard4.setText("");
-        
     }
+
 
     @FXML
     void Stand(ActionEvent event) {
