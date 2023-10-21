@@ -1,5 +1,4 @@
 package com.example.midterm_;
-
 import java.util.Random;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,6 +23,9 @@ public class BlackjackController {
     private TextField dealerCard4;
 
     @FXML
+    private TextField dealerTotalTextField;
+
+    @FXML
     private Button hitButton;
 
     @FXML
@@ -42,9 +44,17 @@ public class BlackjackController {
     private TextField playerCard4;
 
     @FXML
+    private TextField playerTotalTextField;
+
+    @FXML
+    private TextField result1TextField;
+
+    @FXML
+    private TextField result2TextField;
+
+    @FXML
     private Button standButton;
-    
-    
+
     private int playerTotal = 0;
     private int dealerTotal = 0;
 
@@ -70,16 +80,20 @@ public class BlackjackController {
                 playerTotal += cardValue;
             }
 
+            // Update the player's total in real-time
+            playerTotalTextField.setText(String.valueOf(playerTotal));
+
             // Check if the player goes over 21
             if (playerTotal > 21) {
-                betBox.setText("Dealer wins!");
+                result1TextField.setText("Dealer wins!");
+                result2TextField.setText("You lose the bet amount.");
             } else if (playerTotal == 21) {
                 // Stand if player reaches 21
                 Stand(null);
             }
         }
-    }
 
+    }
 
     @FXML
     void Play(ActionEvent event) {
@@ -105,12 +119,19 @@ public class BlackjackController {
         playerCard2.setText(playerCard2Value);
         playerCard3.setText("");
         playerCard4.setText("");
-    }
+        playerTotalTextField.setText("");
+        dealerTotalTextField.setText("");
+        result1TextField.setText("");
+        result2TextField.setText("");
+        // Update the initial player and dealer totals
+        playerTotalTextField.setText(String.valueOf(playerTotal));
+        dealerTotalTextField.setText(String.valueOf(dealerTotal));
 
+    }
 
     @FXML
     void Stand(ActionEvent event) {
-    	// Dealer's turn
+        // Dealer's turn
         while (dealerTotal < 17) {
             String card = generateCardValue();
             dealerTotal += getCardValue(card);
@@ -122,36 +143,41 @@ public class BlackjackController {
                 dealerCard4.setText(card);
             }
         }
+        // Update the dealer's total in real-time
+        dealerTotalTextField.setText(String.valueOf(dealerTotal));
 
-        // Determine the winner
+
+        // Determine the winner and loser
         if (dealerTotal > 21 || (playerTotal <= 21 && playerTotal > dealerTotal)) {
-            betBox.setText("Player wins!");
+            result1TextField.setText("Player wins!");
+            result2TextField.setText("You win the bet amount.");
+
         } else if (playerTotal == dealerTotal) {
-            betBox.setText("It's a tie!");
+            result1TextField.setText("It's a tie!");
+            result2TextField.setText("You get your bet amount back.");
+
         } else {
-            betBox.setText("Dealer wins!");
+            result1TextField.setText("Dealer wins!");
+            result2TextField.setText("You lose the bet amount.");
+
         }
 
     }
-
-    @FXML
-    void placeBet(ActionEvent event) {
-
-    }
-    
-    
     private String generateCardValue() {
-        String[] cards = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+        String[] cards = {"Ace1","2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace11"};
         Random rand = new Random();
         int index = rand.nextInt(cards.length);
         return cards[index];
     }
 
     private int getCardValue(String card) {
-        if (card.equals("A")) {
+        if (card.equals("Ace11")) {
             return 11;
-        } else if (card.equals("K") || card.equals("Q") || card.equals("J")) {
+        } else if (card.equals("King") || card.equals("Queen") || card.equals("Jack")) {
             return 10;
+        }
+        else if(card.equals("Ace1")) {
+            return 1;
         } else {
             return Integer.parseInt(card);
         }
